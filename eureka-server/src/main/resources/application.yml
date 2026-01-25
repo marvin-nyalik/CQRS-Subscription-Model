@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: eureka-server
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false
 
 eureka:
   client:
