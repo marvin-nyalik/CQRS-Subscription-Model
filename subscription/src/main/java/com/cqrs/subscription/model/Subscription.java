@@ -3,13 +3,11 @@ package com.cqrs.subscription.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @Table(
         name = "subscriptions",
@@ -21,6 +19,7 @@ import java.util.UUID;
         }
 )
 public class Subscription {
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -53,6 +52,9 @@ public class Subscription {
     @Column(nullable = false)
     private Instant updatedAt;
 
+    @Version
+    private long version;
+
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();
@@ -63,6 +65,41 @@ public class Subscription {
     @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    public void activate() {
+        if (this.status != SubscriptionStatus.PENDING) {
+            throw new IllegalStateException(
+                    "Only PENDING subscriptions can be activated"
+            );
+        }
+        this.status = SubscriptionStatus.ACTIVE;
+        this.startDate = Instant.now();
+    }
+
+    public void cancel() {
+        if (this.status != SubscriptionStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Only ACTIVE subscriptions can be cancelled"
+            );
+        }
+        this.status = SubscriptionStatus.CANCELLED;
+        this.endDate = Instant.now();
+    }
+
+    public void expire() {
+        if (this.status != SubscriptionStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Only ACTIVE subscriptions can expire"
+            );
+        }
+        this.status = SubscriptionStatus.EXPIRED;
+        this.endDate = Instant.now();
+    }
+
+    public boolean isActive() {
+        return this.status == SubscriptionStatus.ACTIVE
+                && (endDate == null || Instant.now().isBefore(endDate));
     }
 
     @AssertTrue(message = "End date must be after start date")
