@@ -67,6 +67,20 @@ public class Subscription {
         this.updatedAt = Instant.now();
     }
 
+    protected Subscription() {
+        // for JPA
+    }
+
+    private Subscription(UUID userId, String planCode) {
+        this.userId = userId;
+        this.planCode = planCode;
+        this.status = SubscriptionStatus.PENDING;
+    }
+
+    public static Subscription create(UUID userId, String planCode){
+        return new Subscription(userId, planCode)
+    }
+
     public void activate() {
         if (this.status != SubscriptionStatus.PENDING) {
             throw new IllegalStateException(
