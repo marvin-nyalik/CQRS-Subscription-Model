@@ -12,17 +12,25 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(SubscriptionNotFoundException.class)
     public ResponseEntity<?> notFound(SubscriptionNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                Map.of ("timestamp", Instant.now(),
-                        "Message", ex.getMessage())
-        );
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "timestamp", Instant.now(),
+                        "status", 404,
+                        "error", "NOT_FOUND",
+                        "message", ex.getMessage()
+                ));
     }
 
     @ExceptionHandler(ActiveSubscriptionExistsException.class)
     public ResponseEntity<?> conflictFound(ActiveSubscriptionExistsException ex){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                Map.of ("timestamp", Instant.now(),
-                        "Message", ex.getMessage())
-        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "timestamp", Instant.now(),
+                        "status", 409,
+                        "error", "CONFLICT",
+                        "message", ex.getMessage()
+                ));
     }
 }
