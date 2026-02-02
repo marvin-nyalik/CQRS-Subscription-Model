@@ -78,7 +78,7 @@ public class Subscription {
     }
 
     public static Subscription create(UUID userId, String planCode){
-        return new Subscription(userId, planCode)
+        return new Subscription(userId, planCode);
     }
 
     public void activate() {

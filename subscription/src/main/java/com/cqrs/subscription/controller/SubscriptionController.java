@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/subscriptions/")
 public class SubscriptionController {
     private final SubscriptionService service;
 
@@ -18,7 +18,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/{id}")
-    public Subscription get(UUID id){
+    public Subscription get(@PathVariable UUID id){
         return service.get(id);
     }
 
@@ -27,7 +27,7 @@ public class SubscriptionController {
         return  service.createSubscription(request);
     }
 
-    @PostMapping("/cancel/{id}")
+    @PatchMapping("/{id}/cancel")
     public Subscription cancelSubscription(@PathVariable UUID id){
         return service.cancel(id);
     }
