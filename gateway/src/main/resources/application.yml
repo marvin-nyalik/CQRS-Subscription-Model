@@ -1,9 +1,31 @@
 server:
   port: 8080
+  error:
+    whitelabel:
+      enabled: false
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
 
 spring:
   application:
     name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: subscription-service
+          uri: lb://SUBSCRIPTION-SERVICE
+          predicates:
+            - Path=/subscriptions/**
+          filters:
+            - StripPrefix=0
+      httpclient:
+        response-timeout: 5s
+        default-filters:
+          - PreserveHostHeader
 
 eureka:
   client:
