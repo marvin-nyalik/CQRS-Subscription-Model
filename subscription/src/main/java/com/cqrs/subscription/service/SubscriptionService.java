@@ -6,9 +6,11 @@ import com.cqrs.subscription.model.Subscription;
 import com.cqrs.subscription.model.SubscriptionStatus;
 import com.cqrs.subscription.repository.SubscriptionRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class SubscriptionService {
     private final SubscriptionRepository repository;
 
