@@ -12,15 +12,28 @@ public class BillingService {
         this.repository = repo;
     }
 
-    private Payment createAndProcess(
+    public Payment charge (
+            UUID userId,
+            UUID subscriptionId,
+            String planCode,
+            String idempotencyKey
+    ){
+        return repository.findByIdempotencyKey(idempotencyKey).orElseGet(
+                ()-> createAndProcessPayment(
+                        userId, subscriptionId, planCode, idempotencyKey)
+        );
+    }
+
+    private Payment createAndProcessPayment(
             UUID userID,
             UUID subscriptionID,
             String planCode,
             String key
     ){
-        Payment p = Payment.initiate(userID, subscriptionID, planCode, key);
-        repository.save(p);
-        return p;
+        Payment payment = Payment.initiate(userID, subscriptionID, planCode, key);
+        repository.save(payment);
+        simulateExternalCall(payment);
+        return payment;
     }
 
     private void simulateExternalCall(Payment pay){
@@ -32,9 +45,9 @@ public class BillingService {
 
         if(r < 0.6){
             try{
-                Thread.sleep(4000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
-
+                // Do nothing
             }
         }
 
