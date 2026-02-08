@@ -6,6 +6,8 @@ import com.cqrs.billing.service.BillingService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/billing/payments")
 public class BillingController {
@@ -28,5 +30,10 @@ public class BillingController {
         );
 
         return pay;
+    }
+
+    @PostMapping("/{id}/refund")
+    public void refund(@PathVariable UUID id){
+        billingService.refund(id);
     }
 }
