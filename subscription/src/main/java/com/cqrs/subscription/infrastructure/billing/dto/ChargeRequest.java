@@ -1,6 +1,5 @@
 package com.cqrs.subscription.infrastructure.billing.dto;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,7 +8,7 @@ public record ChargeRequest(
         UUID subscriptionId,
         String planCode,
         String idempotencyKey,
-        BigDecimal amount,
+        double amount,
         String currency
 ) {
     public ChargeRequest {
