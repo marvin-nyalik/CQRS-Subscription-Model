@@ -60,6 +60,7 @@ public class Subscription {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
+        this.startDate = now;
     }
 
     @PreUpdate
@@ -89,6 +90,14 @@ public class Subscription {
         }
         this.status = SubscriptionStatus.ACTIVE;
         this.startDate = Instant.now();
+    }
+
+    public void markPending() {
+        this.status = SubscriptionStatus.PENDING;
+    }
+
+    public void markFailed() {
+        this.status = SubscriptionStatus.FAILED;
     }
 
     public void cancel() {
