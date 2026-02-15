@@ -5,10 +5,12 @@ import com.cqrs.billing.exceptions.DuplicateChargeException;
 import com.cqrs.billing.exceptions.PaymentDeclinedException;
 import com.cqrs.billing.model.Payment;
 import com.cqrs.billing.repository.PaymentRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
 public class BillingService {
     private final PaymentRepository repository;
 
