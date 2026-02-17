@@ -18,7 +18,7 @@ public class BillingService {
         this.repository = repo;
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = {PaymentDeclinedException.class, BillingServiceUnavailableException.class})
     public Payment charge (
             UUID userId,
             UUID subscriptionId,
@@ -48,6 +48,7 @@ public class BillingService {
         double r = Math.random();
         if(r < 0.2){
             pay.markFailed("Provider Unavailable");
+            repository.save(pay);
             throw new BillingServiceUnavailableException(
                     "Payment provider is unavailable"
             );
@@ -55,10 +56,12 @@ public class BillingService {
 
         if(r < 0.4){
             pay.markFailed("Payment declined");
+            repository.save(pay);
             throw new PaymentDeclinedException("Payment declined by provider");
         }
 
         pay.markPaid();
+        repository.save(pay);
     }
 
     public void refund(UUID paymentId) {
